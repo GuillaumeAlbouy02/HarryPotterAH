@@ -17,7 +17,7 @@ public class Wizard extends Character {
 
 
     @Builder
-    public Wizard(int hp, String name, Pet pet){
+    public Wizard(){
 
 
     }
