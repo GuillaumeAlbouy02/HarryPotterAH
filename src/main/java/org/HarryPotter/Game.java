@@ -10,6 +10,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Game {
 private Wizard player;
+
+private int level = 1;
 private SafeScanner sc = new SafeScanner();
 
 public void play(){
@@ -35,7 +37,7 @@ private void createPlayer(){
     System.out.println("You must now go to Ollivander's to choose a wand, or, to be exact, to be chosen by a wand");
     player.setWand(new Wand(Core.values()[ThreadLocalRandom.current().nextInt(0,3)], ThreadLocalRandom.current().nextInt(9,15)));
     System.out.println("You were chosen by a "+player.getWand().getSize() + " inches wand, with a " + player.getWand().getCore().name() + " core");
-    SortingHat.chooseHouse(player);
+    SortingHat.chooseHouse(player,sc);
 
 
 
