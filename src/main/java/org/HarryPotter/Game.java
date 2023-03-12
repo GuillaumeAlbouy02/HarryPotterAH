@@ -4,6 +4,7 @@ import org.HarryPotter.Characters.wizards.Core;
 import org.HarryPotter.Characters.wizards.Pet;
 import org.HarryPotter.Characters.wizards.Wand;
 import org.HarryPotter.Characters.wizards.Wizard;
+import org.HarryPotter.levels.Level;
 
 import java.sql.SQLOutput;
 import java.util.concurrent.ThreadLocalRandom;
@@ -12,12 +13,23 @@ public class Game {
 private Wizard player;
 
 private int level = 1;
+
+private Level currentLevel;
 private SafeScanner sc = new SafeScanner();
 
 public void play(){
     createPlayer();
+    while (!gameOver())
+        currentLevel = new Level();
+    }
+
 
 }
+
+
+
+
+
 
 private void createPlayer(){
     player = new Wizard();
@@ -33,7 +45,7 @@ private void createPlayer(){
         }
 
     }
-    System.out.println("So you chose a(n if it's an owl) "+ player.getPet().name());
+    System.out.println("So you chose an adorable "+ player.getPet().name());
     System.out.println("You must now go to Ollivander's to choose a wand, or, to be exact, to be chosen by a wand");
     player.setWand(new Wand(Core.values()[ThreadLocalRandom.current().nextInt(0,3)], ThreadLocalRandom.current().nextInt(9,15)));
     System.out.println("You were chosen by a "+player.getWand().getSize() + " inches wand, with a " + player.getWand().getCore().name() + " core");
@@ -41,5 +53,9 @@ private void createPlayer(){
 
 
 
+}
+
+private boolean gameOver(){
+    return false;
 }
 }
