@@ -1,14 +1,17 @@
 package org.HarryPotter;
 
+import java.io.File;
+import java.io.InputStream;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class SafeScanner {
     Scanner sc;
-    public SafeScanner(){
-        this.sc = new Scanner(System.in);
+    public SafeScanner(InputStream in){
+        this.sc = new Scanner(in);
 
     }
+
 
     public int getInt(){
         int result = 0;

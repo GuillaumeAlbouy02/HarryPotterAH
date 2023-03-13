@@ -6,7 +6,10 @@ import org.HarryPotter.Characters.wizards.Wand;
 import org.HarryPotter.Characters.wizards.Wizard;
 import org.HarryPotter.levels.Level;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.SQLOutput;
+import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Game {
@@ -15,16 +18,25 @@ private Wizard player;
 private int level = 1;
 
 private Level currentLevel;
-private SafeScanner sc = new SafeScanner();
+private SafeScanner sc = new SafeScanner(System.in);
+private Scanner fileSc;
+private boolean gameOver = false;
 
 public void play(){
     createPlayer();
-    while (!gameOver())
+    //while (!gameOver()) {
         currentLevel = new Level();
+        fileSc = new Scanner(getClass().getResourceAsStream("/"+String.valueOf(level)+"text.txt"));
+        while (fileSc.hasNextLine()){
+            System.out.println(fileSc.nextLine());
+        }
+
+
+    //}
     }
 
 
-}
+
 
 
 
