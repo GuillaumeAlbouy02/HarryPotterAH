@@ -1,7 +1,11 @@
-test
-Je teste le paragraphe
-pour voir
-si
-ça marche
-
-pollo
+Your first year is going great so far !
+You've made some friends, learnt to make some potions, to ride a broom and, of course,
+you've learnt some spells !
+So far, you know:
+Alohomora, to open most locks
+Reparo, to repair small objects
+And of course, Wingardium Leviosa (mind the pronunciation) to make some objects levitate.
+Today, everything was going great when, during dinner, your teacher of defence against the dark arts irrupted in  the room
+\"TROOOOOLL, TROLL IN THE DUNGEON\" (he then fainted).
+You and the others students were on your way to the dormitory, when you remembered that one of your friends was absent during dinner, and thus unaware of the presence of the troll.
+You rushed to find your friend and you now stand right in front of the troll in the toilets.
