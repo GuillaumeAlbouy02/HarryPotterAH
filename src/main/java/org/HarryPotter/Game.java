@@ -1,5 +1,9 @@
 package org.HarryPotter;
 
+import org.HarryPotter.Characters.ennemies.AbstractEnemy;
+import org.HarryPotter.Characters.ennemies.Boss;
+import org.HarryPotter.Characters.ennemies.Enemy;
+import org.HarryPotter.Characters.spells.Spell;
 import org.HarryPotter.Characters.wizards.Core;
 import org.HarryPotter.Characters.wizards.Pet;
 import org.HarryPotter.Characters.wizards.Wand;
@@ -15,6 +19,8 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Game {
 private Wizard player;
 
+private AbstractEnemy currentEnemy;
+
 private int level = 1;
 
 private Level currentLevel;
@@ -25,11 +31,21 @@ private boolean gameOver = false;
 public void play(){
     createPlayer();
     //while (!gameOver()) {
-        currentLevel = new Level();
         fileSc = new Scanner(getClass().getResourceAsStream("/"+String.valueOf(level)+"text.txt"));
         while (fileSc.hasNextLine()){
             System.out.println(fileSc.nextLine());
         }
+        levelSelect();
+        while(!currentLevel.isWon()){
+            currentEnemy=currentLevel.getCurrentEnemy();
+            System.out.println("You're facing a "+currentEnemy.getName()+ " at "+currentEnemy.getHp() + " hp");
+            System.out.println("You're at "+player.getHp()+" hp");
+            askMove();
+
+
+        }
+
+
 
 
     //}
@@ -70,4 +86,70 @@ private void createPlayer(){
 private boolean gameOver(){
     return false;
 }
+
+public void levelSelect(){
+    switch (level) {
+        case 1:
+        lev1();
+        break;
+        case 2:
+        lev2();
+        break;
+        case 3:
+        lev3();
+        break;
+        case 4:
+        lev4();
+        break;
+        case 5:
+        lev5();
+        break;
+        case 6:
+        lev6();
+        break;
+        case 7:
+        lev7();
+        break;
+    }
+
+}
+
+public void askMove(){
+    if(sc.getInt2("You can : 1 - Cast spell or 2 - Use object")==1){
+
+    }
+    else{
+
+    }
+
+}
+
+
+    public void lev1(){
+    Boss[] bosses = new Boss[1];
+    bosses[0] = new Boss("Troll", 150);
+    player.setKnownSpells(new Spell[]{new Spell("Alohomora"), new Spell("Reparo"), new Spell("Wingardium Leviosa")});
+
+    currentLevel = new Level(null,bosses);
+
+    }
+    public void lev2(){
+
+    }
+    public void lev3(){
+
+    }
+    public void lev4(){
+
+    }
+    public void lev5(){
+
+    }
+    public void lev6(){
+
+    }
+
+    public void lev7(){
+
+    }
 }
