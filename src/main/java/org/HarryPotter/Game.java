@@ -40,7 +40,7 @@ public void play(){
             currentEnemy=currentLevel.getCurrentEnemy();
             System.out.println("You're facing a "+currentEnemy.getName()+ " at "+currentEnemy.getHp() + " hp");
             System.out.println("You're at "+player.getHp()+" hp");
-            askMove();
+            playerMove();
 
 
         }
@@ -114,8 +114,13 @@ public void levelSelect(){
 
 }
 
-public void askMove(){
+public void playerMove(){
     if(sc.getInt2("You can : 1 - Cast spell or 2 - Use object")==1){
+        System.out.println("Here are the spells you know:");
+        for(int i=0; i<player.getKnownSpells().length;i++){
+            System.out.println(i+" - "+player.getKnownSpells()[i].toString());
+        }
+        sc.getInt2("Which spell do you choose ?");
 
     }
     else{
