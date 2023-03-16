@@ -18,6 +18,7 @@ public class Wizard extends Character {
 
     @Builder
     public Wizard(){
+        this.setHp(100);
 
 
     }

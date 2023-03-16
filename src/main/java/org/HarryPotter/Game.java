@@ -25,24 +25,45 @@ private int level = 1;
 
 private Level currentLevel;
 private SafeScanner sc = new SafeScanner(System.in);
-private Scanner fileSc;
+
 private boolean gameOver = false;
 
 public void play(){
     createPlayer();
-    //while (!gameOver()) {
-        fileSc = new Scanner(getClass().getResourceAsStream("/"+String.valueOf(level)+"text.txt"));
-        while (fileSc.hasNextLine()){
-            System.out.println(fileSc.nextLine());
-        }
-        levelSelect();
-        while(!currentLevel.isWon()){
-            currentEnemy=currentLevel.getCurrentEnemy();
-            System.out.println("You're facing a "+currentEnemy.getName()+ " at "+currentEnemy.getHp() + " hp");
-            System.out.println("You're at "+player.getHp()+" hp");
+
+        while(level<8 && !gameOver){
+        levelSelect();                                              //Level creation
+        currentLevel.display(level,"Intro");
+        while(currentLevel.getCurrentEnemy()!=null && !gameOver) {
+            currentEnemy = currentLevel.getCurrentEnemy();
+            System.out.println("You're facing a " + currentEnemy.getName() + " at " + currentEnemy.getHp() + " hp");
+            System.out.println("You're at " + player.getHp() + " hp");
             playerMove();
+            if (currentEnemy.getHp() <= 0) {
+                currentLevel.killCurrentEnemy();
+                currentEnemy = null;
+            }
+            if (currentEnemy != null) {
+                currentEnemy.attack(player, currentEnemy.getDamage());
+            }
+            if (player.getHp() <= 0) {
+                gameOver = true;
+                System.out.println("Game Over");
+            }
+        }
+        if(currentLevel.getCurrentEnemy()==null){
+            currentLevel.display(level,"Outro");
+            level++;
+        }
 
 
+
+        }
+        if (level==8){
+            System.out.println("you saved the world!");
+        }
+        else{
+            System.out.println("You were tragically killed trying to protect your fiends :(");
         }
 
 
@@ -120,7 +141,12 @@ public void playerMove(){
         for(int i=0; i<player.getKnownSpells().length;i++){
             System.out.println(i+" - "+player.getKnownSpells()[i].toString());
         }
-        sc.getInt2("Which spell do you choose ?");
+        int g=-1;
+        while(g>=player.getKnownSpells().length || g<0) {
+            g = sc.getInt2("Which spell do you choose ?");
+        }
+        player.getKnownSpells()[g].use(currentEnemy);
+
 
     }
     else{
@@ -132,13 +158,18 @@ public void playerMove(){
 
     public void lev1(){
     Boss[] bosses = new Boss[1];
-    bosses[0] = new Boss("Troll", 150);
-    player.setKnownSpells(new Spell[]{new Spell("Alohomora"), new Spell("Reparo"), new Spell("Wingardium Leviosa")});
+    bosses[0] = new Boss("Troll", 150,75,100);
+    player.setKnownSpells(new Spell[]{new Spell("Alohomora", 1,0), new Spell("Reparo",1,0), new Spell("Wingardium Leviosa",50,1)});
 
     currentLevel = new Level(null,bosses);
 
     }
     public void lev2(){
+        Boss[] bosses = new Boss[1];
+        bosses[0] = new Boss("Basilisk", 1000,15,10);
+        player.setKnownSpells(new Spell[]{new Spell("Alohomora", 1,0), new Spell("Reparo",1,0), new Spell("Wingardium Leviosa",50,0)});
+
+        currentLevel = new Level(null,bosses);
 
     }
     public void lev3(){
