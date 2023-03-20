@@ -1,6 +1,9 @@
 package org.HarryPotter.Characters.spells;
 
 import org.HarryPotter.Characters.Character;
+import org.HarryPotter.Characters.ennemies.Boss;
+import org.HarryPotter.Characters.ennemies.Enemy;
+import org.HarryPotter.levels.Level;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -17,7 +20,7 @@ public class Spell extends AbstractSpell{
         this.effect = effect;
     }
 
-    public void use(Character target){
+    public void use(Character target, Level level){
         if (ThreadLocalRandom.current().nextInt(0,101)<=probability) {
             switch (effect) {
                 case 0:
@@ -26,7 +29,18 @@ public class Spell extends AbstractSpell{
                 case 1:
                     leviosa(target);
                     break;
+                case 2:
+                    target.setHp(target.getHp()-40);
+                    break;
+                case 3:
+                    level.setEnemies(new Enemy[]{null});
+                    level.setBosses(new Boss[]{null});
+                    break;
             }
+
+        }
+        else{
+            System.out.println("You fail to cast the spell !");
         }
     }
 

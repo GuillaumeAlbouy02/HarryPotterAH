@@ -23,6 +23,16 @@ public class Wizard extends Character {
 
     }
 
+    public void addSpell(Spell spell){
+        Spell[] newSpells = new Spell[knownSpells.length+1];
+        if(this.knownSpells != null){
+            for(int i=0;i<knownSpells.length;i++){
+                newSpells[i] = knownSpells[i];
+            }
+            newSpells[knownSpells.length] = spell;
+        }
+    }
+
     public void defend(){
 
     }

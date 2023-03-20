@@ -9,8 +9,8 @@ import org.HarryPotter.Characters.ennemies.Enemy;
 import java.util.Scanner;
 
 public class Level {
-    private @Getter Enemy[] enemies;
-    private @Getter Boss[] bosses;
+    private @Getter @Setter Enemy[] enemies;
+    private @Getter @Setter Boss[] bosses;
     private @Getter Cell[][] map;
 
     private @Getter boolean won;
@@ -33,7 +33,7 @@ public class Level {
                 }
             }
         }
-        else if(bosses!=null){
+        if(bosses!=null && enemy==null){
             for (int i = bosses.length - 1; i >= 0; i--) {
                 if (bosses[i] != null) {
                     enemy = bosses[i];

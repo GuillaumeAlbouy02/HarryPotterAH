@@ -27,6 +27,7 @@ private boolean gameOver = false;
 
 public void play(){
     createPlayer();
+    level = sc.getInt2("level : ");
 
         while(level<8 && !gameOver){
         levelSelect();                                              //Level creation
@@ -146,12 +147,24 @@ public void specialRule(int turn){
             }
             break;
         case 3:
+            if (turn == 6){
+                player.setKnownSpells(new Spell[]{new Spell("Alohomora", 1,0), new Spell("Reparo",1,0), new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 45,3)});
+
+            }
 
             break;
         case 4:
+            if(turn>4 && currentEnemy.getName()=="Voldemort"){
+                player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 90, 3)});
+
+            }
 
             break;
         case 5:
+            if(turn>ThreadLocalRandom.current().nextInt(3,7)){
+                System.out.println("you got fireworks");
+                player.setPotions(new Potion[]{new Potion("Health potion", 0), new Potion("Fireworks", 1)});
+            }
 
             break;
         case 6:
@@ -177,11 +190,11 @@ public void playerMove(){
         while(g>=player.getKnownSpells().length || g<0) {
             g = sc.getInt2("Which spell do you choose ?");
         }
-        player.getKnownSpells()[g].use(currentEnemy);
+        player.getKnownSpells()[g].use(currentEnemy, currentLevel);
 
 
     }
-    else{
+    else if(player.getPotions()!=null){
         System.out.println("Here are the objects you have:");
         for(int i=0; i<player.getPotions().length;i++){
             System.out.println(i+" - "+player.getPotions()[i].toString());
@@ -192,6 +205,9 @@ public void playerMove(){
         }
         player.getPotions()[g].use(currentEnemy, player);
 
+    }
+    else{
+        System.out.println("You don't have any objects");
     }
 
 }
@@ -216,12 +232,39 @@ public void playerMove(){
 
     }
     public void lev3(){
+        Enemy[] enemies = new Enemy[15];
+        for(int i =0; i<15;i++){
+            enemies[i] = new Enemy("dementor", 100,10,15);
+
+        }
+        Boss[] bosses = null;
+        player.setKnownSpells(new Spell[]{new Spell("Alohomora", 1,0), new Spell("Reparo",1,0), new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,2)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+
+        currentLevel = new Level(enemies,bosses);
 
     }
     public void lev4(){
+        Enemy[] enemies = new Enemy[]{new Enemy("Peter Pettigrew",100,25,25)};
+
+
+        Boss[] bosses = new Boss[]{new Boss("Voldemort", 1500, 100,10)};
+        player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 10, 3)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+
+        currentLevel = new Level(enemies,bosses);
 
     }
+
+
     public void lev5(){
+        Enemy[] enemies = null;
+
+        Boss[] bosses = new Boss[]{new Boss("Dolores Umbridge", 1000, 13,20)};
+        player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 10, 0)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+
+        currentLevel = new Level(enemies,bosses);
 
     }
     public void lev6(){
