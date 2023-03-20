@@ -13,14 +13,14 @@ public class Potion {
 
     }
 
-    public void use(Character target){
+    public void use(Character enemy, Character player){
         switch (effect) {
-            case 0:
+            case 0: //health potion
                 System.out.println("You drink a healing potion");
-                heal(target);
+                heal(player);
                 break;
             case 1: //case of the Basilic's fang and Gryffindor's sword
-                target.setHp(0);
+                enemy.setHp(0);
 
         }
 
@@ -37,5 +37,8 @@ public class Potion {
         else{
             System.out.println("You cant heal yourself as you are not wounded... yet");
         }
+    }
+    public String toString(){
+        return name;
     }
 }

@@ -4,10 +4,7 @@ import org.HarryPotter.Characters.ennemies.AbstractEnemy;
 import org.HarryPotter.Characters.ennemies.Boss;
 import org.HarryPotter.Characters.ennemies.Enemy;
 import org.HarryPotter.Characters.spells.Spell;
-import org.HarryPotter.Characters.wizards.Core;
-import org.HarryPotter.Characters.wizards.Pet;
-import org.HarryPotter.Characters.wizards.Wand;
-import org.HarryPotter.Characters.wizards.Wizard;
+import org.HarryPotter.Characters.wizards.*;
 import org.HarryPotter.levels.Level;
 
 import java.io.File;
@@ -34,29 +31,33 @@ public void play(){
         while(level<8 && !gameOver){
         levelSelect();                                              //Level creation
         currentLevel.display(level,"Intro");
+        int turn = 1;
         while(currentLevel.getCurrentEnemy()!=null && !gameOver) {
+            specialRule(turn);
             currentEnemy = currentLevel.getCurrentEnemy();
             System.out.println("You're facing a " + currentEnemy.getName() + " at " + currentEnemy.getHp() + " hp");
             System.out.println("You're at " + player.getHp() + " hp");
             playerMove();
+
+
+            //Mettre cette partie dans une fonction
             if (currentEnemy.getHp() <= 0) {
                 currentLevel.killCurrentEnemy();
                 currentEnemy = null;
             }
             if (currentEnemy != null) {
-                currentEnemy.attack(player, currentEnemy.getDamage());
+                currentEnemy.attack(player, currentEnemy.getDamage(), currentEnemy.getPrecision());
             }
             if (player.getHp() <= 0) {
                 gameOver = true;
                 System.out.println("Game Over");
             }
+            turn++;
         }
         if(currentLevel.getCurrentEnemy()==null){
             currentLevel.display(level,"Outro");
             level++;
         }
-
-
 
         }
         if (level==8){
@@ -65,11 +66,6 @@ public void play(){
         else{
             System.out.println("You were tragically killed trying to protect your fiends :(");
         }
-
-
-
-
-    //}
     }
 
 
@@ -134,6 +130,42 @@ public void levelSelect(){
     }
 
 }
+public void specialRule(int turn){
+    switch (level) {
+        case 2:
+            if(turn ==3 && player.getHouse().equals(House.GRYFFINDOR)){
+                System.out.println("You are slowly losing hope of ever defeating this beast, when you suddenly hear a bird's cry beahind you. You turn around, only to discover that :");
+                System.out.println("Dumbledore's phoenix, Fawkes, has brought you... GRYFFINDOR's SWORD ?!!?");
+                player.setPotions(new Potion[]{new Potion("health potion",0), new Potion("Godric Gryffindor's sword",1)});
+            } else if (turn == 5 && !player.getHouse().equals(House.GRYFFINDOR)){
+                System.out.println("You grow tired and you are losing hope, there's simply nothing you can do !");
+                System.out.println("You throw a rock at the basilisk out of hopelessness, and somehow manage to break one of its fang, which you quickly pick up as it would make a nice souvenir if you ever got out of here alive.");
+                player.setPotions(new Potion[]{new Potion("health potion",0), new Potion("A basilisk fang",1)});
+
+
+            }
+            break;
+        case 3:
+
+            break;
+        case 4:
+
+            break;
+        case 5:
+
+            break;
+        case 6:
+
+            break;
+        case 7:
+
+            break;
+        default:
+            break;
+
+    }
+
+}
 
 public void playerMove(){
     if(sc.getInt2("You can : 1 - Cast spell or 2 - Use object")==1){
@@ -150,6 +182,15 @@ public void playerMove(){
 
     }
     else{
+        System.out.println("Here are the objects you have:");
+        for(int i=0; i<player.getPotions().length;i++){
+            System.out.println(i+" - "+player.getPotions()[i].toString());
+        }
+        int g=-1;
+        while(g>=player.getKnownSpells().length || g<0) {
+            g = sc.getInt2("Which object do you choose to use ?");
+        }
+        player.getPotions()[g].use(currentEnemy, player);
 
     }
 
@@ -159,7 +200,8 @@ public void playerMove(){
     public void lev1(){
     Boss[] bosses = new Boss[1];
     bosses[0] = new Boss("Troll", 150,75,100);
-    player.setKnownSpells(new Spell[]{new Spell("Alohomora", 1,0), new Spell("Reparo",1,0), new Spell("Wingardium Leviosa",50,1)});
+    player.setKnownSpells(new Spell[]{new Spell("Alohomora", 100,0), new Spell("Reparo",100,0), new Spell("Wingardium Leviosa",75,1)});
+
 
     currentLevel = new Level(null,bosses);
 
@@ -168,6 +210,7 @@ public void playerMove(){
         Boss[] bosses = new Boss[1];
         bosses[0] = new Boss("Basilisk", 1000,15,10);
         player.setKnownSpells(new Spell[]{new Spell("Alohomora", 1,0), new Spell("Reparo",1,0), new Spell("Wingardium Leviosa",50,0)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
 
         currentLevel = new Level(null,bosses);
 
