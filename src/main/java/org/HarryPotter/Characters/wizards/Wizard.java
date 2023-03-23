@@ -14,24 +14,20 @@ public class Wizard extends Character {
     private @Getter @Setter House house;
     private @Getter @Setter Spell[] knownSpells;
     private @Getter @Setter Potion[] potions;
+    private @Getter @Setter int maxHealth;
+    private @Getter @Setter double damageMultiplier;
 
 
     @Builder
     public Wizard(){
         this.setHp(100);
+        this.setMaxHealth(100);
+        this.setDamageMultiplier(1);
 
 
     }
 
-    public void addSpell(Spell spell){
-        Spell[] newSpells = new Spell[knownSpells.length+1];
-        if(this.knownSpells != null){
-            for(int i=0;i<knownSpells.length;i++){
-                newSpells[i] = knownSpells[i];
-            }
-            newSpells[knownSpells.length] = spell;
-        }
-    }
+
 
     public void defend(){
 

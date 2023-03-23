@@ -3,6 +3,7 @@ package org.HarryPotter.Characters.spells;
 import org.HarryPotter.Characters.Character;
 import org.HarryPotter.Characters.ennemies.Boss;
 import org.HarryPotter.Characters.ennemies.Enemy;
+import org.HarryPotter.Characters.wizards.Wizard;
 import org.HarryPotter.levels.Level;
 
 import java.util.concurrent.ThreadLocalRandom;
@@ -20,7 +21,7 @@ public class Spell extends AbstractSpell{
         this.effect = effect;
     }
 
-    public void use(Character target, Level level){
+    public void use(Character target, Level level, Wizard player){
         if (ThreadLocalRandom.current().nextInt(0,101)<=probability) {
             switch (effect) {
                 case 0:
@@ -30,12 +31,14 @@ public class Spell extends AbstractSpell{
                     leviosa(target);
                     break;
                 case 2:
-                    target.setHp(target.getHp()-40);
+                    target.setHp(target.getHp()-(int)(30*player.getDamageMultiplier()));
                     break;
                 case 3:
                     level.setEnemies(new Enemy[]{null});
                     level.setBosses(new Boss[]{null});
                     break;
+                case 4:
+                    target.setHp(target.getHp()-(int)(50* player.getDamageMultiplier()));
             }
 
         }

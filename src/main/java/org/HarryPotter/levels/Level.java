@@ -44,28 +44,29 @@ public class Level {
         return enemy;
     }
 
-public void killCurrentEnemy(){
-        int enemy = -1;
+public void killCurrentEnemy(AbstractEnemy enemyKilled) {
     if (enemies != null) {
         for (int i = enemies.length - 1; i >= 0; i--) {
-            if (enemies[i] != null) {
-                enemy = i;
+            if (enemies[i] == enemyKilled) {
+                enemies[i] = null;
 
             }
         }
-        enemies[enemy] = null;
+
     }
-    else if(bosses!=null){
-        for (int i = bosses.length - 1; i >= 0; i--) {
-            if (bosses[i] != null) {
-                enemy = i;
+    if (bosses != null) {
+        for (int c = bosses.length - 1; c >= 0; c--) {
+            if (bosses[c] == enemyKilled) {
+                bosses[c] = null;
 
             }
         }
-        bosses[enemy] = null;
-    }
 
+    }
 }
+
+
+
 
 public void display(int level, String state){
     Scanner fileSc = new Scanner(getClass().getResourceAsStream("/"+String.valueOf(level)+state+"Text.txt"));

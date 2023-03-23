@@ -13,7 +13,7 @@ public class Potion {
 
     }
 
-    public void use(Character enemy, Character player){
+    public void use(Character enemy, Wizard player){
         switch (effect) {
             case 0: //health potion
                 System.out.println("You drink a healing potion");
@@ -25,17 +25,26 @@ public class Potion {
         }
 
     }
-    public void heal(Character player){
-        if(player.getHp()<100){
-            if (player.getHp()<90){
-                player.setHp(player.getHp()+10);
+    public void heal(Wizard player){
+        if(player.getHp()<player.getMaxHealth()){
+            if (player.getHouse()== House.HUFFLEPUFF){
+                if (player.getHp()< player.getMaxHealth()-10){
+                    player.setHp(player.getHp()+10);
+                }
+                else{
+                    player.setHp(player.getMaxHealth());
+                }
             }
-            else{
-                player.setHp(100);
+            else {
+                if (player.getHp() < player.getMaxHealth() - 10) {
+                    player.setHp(player.getHp() + 10);
+                } else {
+                    player.setHp(player.getMaxHealth());
+                }
             }
         }
         else{
-            System.out.println("You cant heal yourself as you are not wounded... yet");
+            System.out.println("You cannot heal yourself as you are not wounded... yet");
         }
     }
     public String toString(){

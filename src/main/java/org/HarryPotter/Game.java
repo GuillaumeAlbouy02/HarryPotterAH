@@ -39,24 +39,27 @@ public void play(){
             System.out.println("You're facing a " + currentEnemy.getName() + " at " + currentEnemy.getHp() + " hp");
             System.out.println("You're at " + player.getHp() + " hp");
             playerMove();
-
-
-            //Mettre cette partie dans une fonction
-            if (currentEnemy.getHp() <= 0) {
-                currentLevel.killCurrentEnemy();
-                currentEnemy = null;
-            }
-            if (currentEnemy != null) {
-                currentEnemy.attack(player, currentEnemy.getDamage(), currentEnemy.getPrecision());
-            }
-            if (player.getHp() <= 0) {
-                gameOver = true;
-                System.out.println("Game Over");
-            }
+            endTurn();
             turn++;
         }
         if(currentLevel.getCurrentEnemy()==null){
-            currentLevel.display(level,"Outro");
+            System.out.println("You cleared the level !\nYou can choose to 1 - increase your health\n 2 - increase your damages");
+            int choice = 0;
+            while (choice==0) {
+                choice = sc.getInt2("Press 1 to stay loyal, or 2 to side with the death eaters");
+
+                if (choice == 2) {
+                    player.setDamageMultiplier(player.getDamageMultiplier()+0.1);
+
+                }
+                else if (choice == 1) {
+                    player.setMaxHealth(player.getMaxHealth()+20);
+
+                    }
+                else {
+                    choice = 0;
+                }
+            }currentLevel.display(level,"Outro");
             level++;
         }
 
@@ -66,6 +69,20 @@ public void play(){
         }
         else{
             System.out.println("You were tragically killed trying to protect your fiends :(");
+        }
+    }
+
+    public void endTurn(){
+        if (currentEnemy.getHp() <= 0) {
+            currentLevel.killCurrentEnemy(currentEnemy);
+            currentEnemy = null;
+        }
+        if (currentEnemy != null) {
+            currentEnemy.attack(player, currentEnemy.getDamage(), currentEnemy.getPrecision());
+        }
+        if (player.getHp() <= 0) {
+            gameOver = true;
+            System.out.println("Game Over");
         }
     }
 
@@ -96,6 +113,9 @@ private void createPlayer(){
     player.setWand(new Wand(Core.values()[ThreadLocalRandom.current().nextInt(0,3)], ThreadLocalRandom.current().nextInt(9,15)));
     System.out.println("You were chosen by a "+player.getWand().getSize() + " inches wand, with a " + player.getWand().getCore().name() + " core");
     SortingHat.chooseHouse(player,sc);
+    if (player.getHouse()==House.SLYTHERIN){
+        player.setDamageMultiplier(1.5);
+    }
 
 
 
@@ -154,7 +174,14 @@ public void specialRule(int turn){
 
             break;
         case 4:
-            if(turn>4 && currentEnemy.getName()=="Voldemort"){
+
+            if(currentEnemy!=null&&currentEnemy.getName()=="Voldemort"){
+                if (player.getWand().getCore()==Core.PHOENIX_FEATHERS) {
+                    System.out.println("As you and Voldemort start to battle, right as your spells collide, the most peculiar thing happens : the spells stop, they cancel each other out");
+                    System.out.println("You both understand that, being brothers, your wands can't battle each other");
+                    System.out.println("During this brief moment of confusion, you take your chance and cast Accio to get the portkey as fast as you can");
+                    currentLevel.killCurrentEnemy(currentEnemy);
+                }
                 player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 90, 3)});
 
             }
@@ -167,10 +194,9 @@ public void specialRule(int turn){
             }
 
             break;
-        case 6:
 
-            break;
         case 7:
+
 
             break;
         default:
@@ -190,7 +216,7 @@ public void playerMove(){
         while(g>=player.getKnownSpells().length || g<0) {
             g = sc.getInt2("Which spell do you choose ?");
         }
-        player.getKnownSpells()[g].use(currentEnemy, currentLevel);
+        player.getKnownSpells()[g].use(currentEnemy, currentLevel, player);
 
 
     }
@@ -268,10 +294,49 @@ public void playerMove(){
 
     }
     public void lev6(){
+    if(player.getHouse() == House.SLYTHERIN){
+        System.out.println("Being a Slytherin, you have always had a sort of affinity with the dark arts. As you watch the death eaters, you are faced with a terrible dilemma :\n"+
+                "Will you stay loyal to your friends and Hogwarts, or will you side with the Dark Lord ?");
+        int choice = 0;
+        while (choice==0) {
+            choice = sc.getInt2("Press 1 to stay loyal, or 2 to side with the death eaters");
 
+            if (choice == 2) {
+                Enemy[] enemies = new Enemy[]{new Enemy("Student", 60, 5, 50), new Enemy("Student", 60, 5, 50), new Enemy("Student", 60, 5, 50)};
+
+                Boss[] bosses = new Boss[]{new Boss("Hogwarts teacher", 150, 13, 20)};
+                player.setKnownSpells(new Spell[]{new Spell("Wingardium Leviosa", 50, 0), new Spell("Expecto Patronum", 15, 0), new Spell("Expelliarmus", 75, 2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75, 4)});
+                player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+
+                currentLevel = new Level(enemies, bosses);
+            } else if (choice == 1) {
+                lev6Loy();
+            } else {
+                choice = 0;
+            }
+        }
+    }
+    else{lev6Loy();}
+
+    }
+    public void lev6Loy(){
+        Enemy[] enemies = new Enemy[]{new Enemy("Death Eater", 60,5,50),new Enemy("Death Eater", 60,5,50),new Enemy("Death Eater", 60,5,50)};
+
+        Boss[] bosses = new Boss[]{new Boss("Severus Snape", 150, 13,20)};
+        player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75,4)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+
+        currentLevel = new Level(enemies,bosses);
     }
 
     public void lev7(){
+        Enemy[] enemies = new Enemy[]{new Enemy("Death Eater", 60,5,50),new Enemy("Death Eater", 60,5,50),new Enemy("Death Eater", 60,5,50)};
+
+        Boss[] bosses = new Boss[]{new Boss("Bellatrix Lestrange", 200, 20,20),new Boss("Voldemort", 200, 40,20)};
+        player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75,4)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+
+        currentLevel = new Level(enemies,bosses);
 
     }
 }
