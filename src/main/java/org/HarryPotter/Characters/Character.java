@@ -7,7 +7,6 @@ import org.HarryPotter.Position;
 import java.util.concurrent.ThreadLocalRandom;
 
 public abstract class Character {
-    private  @Getter @Setter Position position;
     private @Setter @Getter String name;
     private @Getter @Setter int hp;
 

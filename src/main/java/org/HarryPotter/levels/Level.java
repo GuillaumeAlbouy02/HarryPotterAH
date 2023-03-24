@@ -13,7 +13,6 @@ public class Level {
     @Setter Enemy[] enemies;
     private @Getter
     @Setter Boss[] bosses;
-    private @Getter Cell[][] map;
 
     private @Getter boolean won;
 
