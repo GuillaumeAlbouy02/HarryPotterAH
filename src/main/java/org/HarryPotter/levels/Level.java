@@ -9,17 +9,19 @@ import org.HarryPotter.Characters.ennemies.Enemy;
 import java.util.Scanner;
 
 public class Level {
-    private @Getter @Setter Enemy[] enemies;
-    private @Getter @Setter Boss[] bosses;
+    private @Getter
+    @Setter Enemy[] enemies;
+    private @Getter
+    @Setter Boss[] bosses;
     private @Getter Cell[][] map;
 
     private @Getter boolean won;
 
 
-    public Level(Enemy[] enemies, Boss[] bosses){
-        this.enemies=enemies;
-        this.bosses=bosses;
-        this.won=false;
+    public Level(Enemy[] enemies, Boss[] bosses) {
+        this.enemies = enemies;
+        this.bosses = bosses;
+        this.won = false;
 
     }
 
@@ -33,7 +35,7 @@ public class Level {
                 }
             }
         }
-        if(bosses!=null && enemy==null){
+        if (bosses != null && enemy == null) {
             for (int i = bosses.length - 1; i >= 0; i--) {
                 if (bosses[i] != null) {
                     enemy = bosses[i];
@@ -44,36 +46,29 @@ public class Level {
         return enemy;
     }
 
-public void killCurrentEnemy(AbstractEnemy enemyKilled) {
-    if (enemies != null) {
-        for (int i = enemies.length - 1; i >= 0; i--) {
-            if (enemies[i] == enemyKilled) {
-                enemies[i] = null;
+    public void killCurrentEnemy(AbstractEnemy enemyKilled) {
+        if (enemies != null) {
+            for (int i = enemies.length - 1; i >= 0; i--) {
+                if (enemies[i] == enemyKilled) {
+                    enemies[i] = null;
 
+                }
             }
+
         }
+        if (bosses != null) {
+            for (int c = bosses.length - 1; c >= 0; c--) {
+                if (bosses[c] == enemyKilled) {
+                    bosses[c] = null;
 
-    }
-    if (bosses != null) {
-        for (int c = bosses.length - 1; c >= 0; c--) {
-            if (bosses[c] == enemyKilled) {
-                bosses[c] = null;
-
+                }
             }
+
         }
-
     }
-}
 
 
 
-
-public void display(int level, String state){
-    Scanner fileSc = new Scanner(getClass().getResourceAsStream("/"+String.valueOf(level)+state+"Text.txt"));
-    while (fileSc.hasNextLine()){
-        System.out.println(fileSc.nextLine());
-    }
-}
 
 
 }

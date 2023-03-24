@@ -3,6 +3,7 @@ package org.HarryPotter.Characters.wizards;
 import lombok.Getter;
 import lombok.Setter;
 import org.HarryPotter.Characters.Character;
+import org.HarryPotter.display.Display;
 
 public class Potion {
     private @Getter @Setter String name;
@@ -13,11 +14,11 @@ public class Potion {
 
     }
 
-    public void use(Character enemy, Wizard player){
+    public void use(Character enemy, Wizard player, Display ds){
         switch (effect) {
             case 0: //health potion
-                System.out.println("You drink a healing potion");
-                heal(player);
+                ds.printText("You drink a healing potion");
+                heal(player,ds);
                 break;
             case 1: //case of the Basilic's fang and Gryffindor's sword
                 enemy.setHp(0);
@@ -25,7 +26,7 @@ public class Potion {
         }
 
     }
-    public void heal(Wizard player){
+    public void heal(Wizard player, Display ds){
         if(player.getHp()<player.getMaxHealth()){
             if (player.getHouse()== House.HUFFLEPUFF){
                 if (player.getHp()< player.getMaxHealth()-10){
@@ -44,7 +45,7 @@ public class Potion {
             }
         }
         else{
-            System.out.println("You cannot heal yourself as you are not wounded... yet");
+            ds.printText("You cannot heal yourself as you are not wounded... yet");
         }
     }
     public String toString(){

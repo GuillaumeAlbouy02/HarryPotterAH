@@ -16,6 +16,9 @@ public class Wizard extends Character {
     private @Getter @Setter Potion[] potions;
     private @Getter @Setter int maxHealth;
     private @Getter @Setter double damageMultiplier;
+    private @Getter @Setter int defend = 0;
+    private @Getter @Setter float defense = 0.8f;
+    private @Getter @Setter float precision = 1f;
 
 
     @Builder

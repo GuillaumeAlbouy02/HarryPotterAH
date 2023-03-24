@@ -5,6 +5,7 @@ import org.HarryPotter.Characters.ennemies.Boss;
 import org.HarryPotter.Characters.ennemies.Enemy;
 import org.HarryPotter.Characters.spells.Spell;
 import org.HarryPotter.Characters.wizards.*;
+import org.HarryPotter.display.Display;
 import org.HarryPotter.levels.Level;
 
 import java.io.File;
@@ -21,7 +22,10 @@ private AbstractEnemy currentEnemy;
 private int level = 1;
 
 private Level currentLevel;
-private SafeScanner sc = new SafeScanner(System.in);
+
+private Display ds = new Display();
+private SafeScanner sc = new SafeScanner(System.in, ds);
+
 
 private boolean gameOver = false;
 
@@ -31,22 +35,22 @@ public void play(){
 
         while(level<8 && !gameOver){
         levelSelect();                                              //Level creation
-        currentLevel.display(level,"Intro");
+        ds.displayLevel(level,"Intro");
         int turn = 1;
         while(currentLevel.getCurrentEnemy()!=null && !gameOver) {
             specialRule(turn);
             currentEnemy = currentLevel.getCurrentEnemy();
-            System.out.println("You're facing a " + currentEnemy.getName() + " at " + currentEnemy.getHp() + " hp");
-            System.out.println("You're at " + player.getHp() + " hp");
+            ds.printText("You're facing a " + currentEnemy.getName() + " at " + currentEnemy.getHp() + " hp");
+            ds.printText("You're at " + player.getHp() + " hp");
             playerMove();
             endTurn();
             turn++;
         }
         if(currentLevel.getCurrentEnemy()==null){
-            System.out.println("You cleared the level !\nYou can choose to 1 - increase your health\n 2 - increase your damages");
+            ds.printText("You cleared the level !\nYou can choose to 1 - increase your health\n 2 - increase your damages");
             int choice = 0;
             while (choice==0) {
-                choice = sc.getInt2("Press 1 to stay loyal, or 2 to side with the death eaters");
+                choice = sc.getInt2("Press 1 for heath, or 2 for damage");
 
                 if (choice == 2) {
                     player.setDamageMultiplier(player.getDamageMultiplier()+0.1);
@@ -59,30 +63,35 @@ public void play(){
                 else {
                     choice = 0;
                 }
-            }currentLevel.display(level,"Outro");
+            }ds.displayLevel(level,"Outro");
             level++;
         }
 
         }
         if (level==8){
-            System.out.println("you saved the world!");
+            ds.printText("you saved the world!");
         }
         else{
-            System.out.println("You were tragically killed trying to protect your fiends :(");
+            ds.printText("You were tragically killed trying to protect your friends :(");
         }
     }
 
     public void endTurn(){
+
         if (currentEnemy.getHp() <= 0) {
             currentLevel.killCurrentEnemy(currentEnemy);
             currentEnemy = null;
         }
-        if (currentEnemy != null) {
+        if (currentEnemy != null && player.getDefend()!=1) {
             currentEnemy.attack(player, currentEnemy.getDamage(), currentEnemy.getPrecision());
+        } else if (currentEnemy != null && player.getDefend()==1) {
+            currentEnemy.attack(player, (int)(currentEnemy.getDamage()* player.getDefense()), currentEnemy.getPrecision());
+
         }
+        player.setDefend(0);
         if (player.getHp() <= 0) {
             gameOver = true;
-            System.out.println("Game Over");
+            ds.printText("Game Over");
         }
     }
 
@@ -98,9 +107,9 @@ private void createPlayer(){
     player = new Wizard();
     player.setName(sc.getString("Please enter your name : "));
     player.setPet(null);
-    System.out.println("Congratulation "+player.getName()+ " ! You've been accepted to Hogwarts School of Witchcraft and Wizardry !");
-    System.out.println("You must be exited to start the first year, but first you have to buy a pet and a wand in Diagon Alley");
-    System.out.println("Let's start with the pet, you can choose between an owl, a rat, a cat or a toad");
+    ds.printText("Congratulation "+player.getName()+ " ! You've been accepted to Hogwarts School of Witchcraft and Wizardry !");
+    ds.printText("You must be excited to start the first year, but first you have to buy a pet and a wand in Diagon Alley");
+    ds.printText("Let's start with the pet, you can choose between an owl, a rat, a cat or a toad");
     while (player.getPet()==null){
         int choix = sc.getInt2("Enter 1 for owl, 2 for rat, 3 for cat or 4 for a toad");
         if(choix<5){
@@ -108,13 +117,19 @@ private void createPlayer(){
         }
 
     }
-    System.out.println("So you chose an adorable "+ player.getPet().name());
-    System.out.println("You must now go to Ollivander's to choose a wand, or, to be exact, to be chosen by a wand");
+    ds.printText("So you chose an adorable "+ player.getPet().name());
+    ds.printText("You must now go to Ollivander's to choose a wand, or, to be exact, to be chosen by a wand");
     player.setWand(new Wand(Core.values()[ThreadLocalRandom.current().nextInt(0,3)], ThreadLocalRandom.current().nextInt(9,15)));
-    System.out.println("You were chosen by a "+player.getWand().getSize() + " inches wand, with a " + player.getWand().getCore().name() + " core");
-    SortingHat.chooseHouse(player,sc);
+    ds.printText("You were chosen by a "+player.getWand().getSize() + " inches wand, with a " + player.getWand().getCore().name() + " core");
+    SortingHat.chooseHouse(player,sc, ds);
     if (player.getHouse()==House.SLYTHERIN){
         player.setDamageMultiplier(1.5);
+    }
+    if(player.getHouse()==House.GRYFFINDOR){
+        player.setDefense(0.5f);
+    }
+    if(player.getHouse()==House.RAVENCLAW){
+        player.setPrecision(1.3f);
     }
 
 
@@ -155,12 +170,12 @@ public void specialRule(int turn){
     switch (level) {
         case 2:
             if(turn ==3 && player.getHouse().equals(House.GRYFFINDOR)){
-                System.out.println("You are slowly losing hope of ever defeating this beast, when you suddenly hear a bird's cry beahind you. You turn around, only to discover that :");
-                System.out.println("Dumbledore's phoenix, Fawkes, has brought you... GRYFFINDOR's SWORD ?!!?");
+                ds.printText("You are slowly losing hope of ever defeating this beast, when you suddenly hear a bird's cry beahind you. You turn around, only to discover that :");
+                ds.printText("Dumbledore's phoenix, Fawkes, has brought you... GRYFFINDOR's SWORD ?!!?");
                 player.setPotions(new Potion[]{new Potion("health potion",0), new Potion("Godric Gryffindor's sword",1)});
             } else if (turn == 5 && !player.getHouse().equals(House.GRYFFINDOR)){
-                System.out.println("You grow tired and you are losing hope, there's simply nothing you can do !");
-                System.out.println("You throw a rock at the basilisk out of hopelessness, and somehow manage to break one of its fang, which you quickly pick up as it would make a nice souvenir if you ever got out of here alive.");
+                ds.printText("You grow tired and you are losing hope, there's simply nothing you can do !");
+                ds.printText("You throw a rock at the basilisk out of hopelessness, and somehow manage to break one of its fang, which you quickly pick up as it would make a nice souvenir if you ever got out of here alive.");
                 player.setPotions(new Potion[]{new Potion("health potion",0), new Potion("A basilisk fang",1)});
 
 
@@ -177,9 +192,9 @@ public void specialRule(int turn){
 
             if(currentEnemy!=null&&currentEnemy.getName()=="Voldemort"){
                 if (player.getWand().getCore()==Core.PHOENIX_FEATHERS) {
-                    System.out.println("As you and Voldemort start to battle, right as your spells collide, the most peculiar thing happens : the spells stop, they cancel each other out");
-                    System.out.println("You both understand that, being brothers, your wands can't battle each other");
-                    System.out.println("During this brief moment of confusion, you take your chance and cast Accio to get the portkey as fast as you can");
+                    ds.printText("As you and Voldemort start to battle, right as your spells collide, the most peculiar thing happens : the spells stop, they cancel each other out");
+                    ds.printText("You both understand that, being brothers, your wands can't battle each other");
+                    ds.printText("During this brief moment of confusion, you take your chance and cast Accio to get the portkey as fast as you can");
                     currentLevel.killCurrentEnemy(currentEnemy);
                 }
                 player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 90, 3)});
@@ -189,7 +204,7 @@ public void specialRule(int turn){
             break;
         case 5:
             if(turn>ThreadLocalRandom.current().nextInt(3,7)){
-                System.out.println("you got fireworks");
+                ds.printText("you got fireworks");
                 player.setPotions(new Potion[]{new Potion("Health potion", 0), new Potion("Fireworks", 1)});
             }
 
@@ -207,33 +222,45 @@ public void specialRule(int turn){
 }
 
 public void playerMove(){
-    if(sc.getInt2("You can : 1 - Cast spell or 2 - Use object")==1){
-        System.out.println("Here are the spells you know:");
-        for(int i=0; i<player.getKnownSpells().length;i++){
-            System.out.println(i+" - "+player.getKnownSpells()[i].toString());
-        }
-        int g=-1;
-        while(g>=player.getKnownSpells().length || g<0) {
-            g = sc.getInt2("Which spell do you choose ?");
-        }
-        player.getKnownSpells()[g].use(currentEnemy, currentLevel, player);
+    int choice = 0;
+    while (choice ==0) {
+        choice = sc.getInt2("You can : \n1 - Cast spell \n2 - Use object \n3 - Defend");
+        if (choice == 1) {
+            ds.printText("Here are the spells you know:");
+            for (int i = 0; i < player.getKnownSpells().length; i++) {
+                ds.printText(i + " - " + player.getKnownSpells()[i].toString());
+            }
+            int g = -1;
+            while (g >= player.getKnownSpells().length || g < 0) {
+                g = sc.getInt2("Which spell do you choose ?");
+            }
+            player.getKnownSpells()[g].use(currentEnemy, currentLevel, player, ds);
 
 
-    }
-    else if(player.getPotions()!=null){
-        System.out.println("Here are the objects you have:");
-        for(int i=0; i<player.getPotions().length;i++){
-            System.out.println(i+" - "+player.getPotions()[i].toString());
-        }
-        int g=-1;
-        while(g>=player.getKnownSpells().length || g<0) {
-            g = sc.getInt2("Which object do you choose to use ?");
-        }
-        player.getPotions()[g].use(currentEnemy, player);
+        } else if (choice == 2) {
+            if (player.getPotions() != null) {
+                ds.printText("Here are the objects you have:");
+                for (int i = 0; i < player.getPotions().length; i++) {
+                    ds.printText(i + " - " + player.getPotions()[i].toString());
+                }
+                int g = -1;
+                while (g >= player.getKnownSpells().length || g < 0) {
+                    g = sc.getInt2("Which object do you choose to use ?");
+                }
+                player.getPotions()[g].use(currentEnemy, player, ds);
 
-    }
-    else{
-        System.out.println("You don't have any objects");
+            } else {
+                ds.printText("You don't have any objects");
+            }
+
+        } else if (choice==3) {
+            ds.printText("You chose to defend yourself");
+            player.setDefend(1);
+
+
+        } else{
+            choice = 0;
+        }
     }
 
 }
@@ -295,7 +322,7 @@ public void playerMove(){
     }
     public void lev6(){
     if(player.getHouse() == House.SLYTHERIN){
-        System.out.println("Being a Slytherin, you have always had a sort of affinity with the dark arts. As you watch the death eaters, you are faced with a terrible dilemma :\n"+
+        ds.printText("Being a Slytherin, you have always had a sort of affinity with the dark arts. As you watch the death eaters, you are faced with a terrible dilemma :\n"+
                 "Will you stay loyal to your friends and Hogwarts, or will you side with the Dark Lord ?");
         int choice = 0;
         while (choice==0) {

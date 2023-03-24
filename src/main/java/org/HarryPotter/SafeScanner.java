@@ -1,14 +1,18 @@
 package org.HarryPotter;
 
+import org.HarryPotter.display.Display;
+
 import java.io.File;
 import java.io.InputStream;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class SafeScanner {
-    Scanner sc;
-    public SafeScanner(InputStream in){
+    private Scanner sc;
+    private Display ds;
+    public SafeScanner(InputStream in, Display ds){
         this.sc = new Scanner(in);
+        this.ds = ds;
 
     }
 
@@ -19,7 +23,7 @@ public class SafeScanner {
         while (!inputValid)
         {
             try{
-                System.out.println("Veuillez saisir un entier");
+                ds.printText("Veuillez saisir un entier");
                 result=this.sc.nextInt();
 
                 inputValid=true;
@@ -35,17 +39,17 @@ public class SafeScanner {
     }
 
     public int getInt2(String message){
-        System.out.println(message);
+        ds.printText(message);
         while(!sc.hasNextInt()){
-            System.out.println(message);
+            ds.printText(message);
             sc.next();
         }
         return sc.nextInt();
     }
     public String getString(String message){
-        System.out.println(message);
+        ds.printText(message);
         while(!sc.hasNextLine()){
-            System.out.println(message);
+            ds.printText(message);
             sc.next();
         }
         return sc.nextLine();
