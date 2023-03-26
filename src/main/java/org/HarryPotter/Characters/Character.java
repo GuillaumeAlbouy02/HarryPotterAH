@@ -2,7 +2,6 @@ package org.HarryPotter.Characters;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.HarryPotter.Position;
 
 import java.util.concurrent.ThreadLocalRandom;
 

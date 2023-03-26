@@ -49,7 +49,7 @@ public class Spell extends AbstractSpell{
     }
 
     public static void leviosa(Character enemy, Display ds){
-        ds.printText("You decide to use Wingardium Leviosa on the troll's club and knock him out");
+
         enemy.setHp(0);
 
     }

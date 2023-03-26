@@ -19,6 +19,7 @@ public class Wizard extends Character {
     private @Getter @Setter int defend = 0;
     private @Getter @Setter float defense = 0.8f;
     private @Getter @Setter float precision = 1f;
+    private @Getter @Setter boolean isEvil = false;
 
 
     @Builder

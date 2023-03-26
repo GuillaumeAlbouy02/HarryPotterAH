@@ -334,6 +334,7 @@ public void playerMove(){
                 Boss[] bosses = new Boss[]{new Boss("Hogwarts teacher", 150, 13, 20)};
                 player.setKnownSpells(new Spell[]{new Spell("Wingardium Leviosa", 50, 0), new Spell("Expecto Patronum", 15, 0), new Spell("Expelliarmus", 75, 2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75, 4)});
                 player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+                player.setEvil(true);
 
                 currentLevel = new Level(enemies, bosses);
             } else if (choice == 1) {
@@ -357,13 +358,26 @@ public void playerMove(){
     }
 
     public void lev7(){
-        Enemy[] enemies = new Enemy[]{new Enemy("Death Eater", 60,5,50),new Enemy("Death Eater", 60,5,50),new Enemy("Death Eater", 60,5,50)};
+    if (!player.isEvil()) {
 
-        Boss[] bosses = new Boss[]{new Boss("Bellatrix Lestrange", 200, 20,20),new Boss("Voldemort", 200, 40,20)};
-        player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75,4)});
+
+        Enemy[] enemies = new Enemy[]{new Enemy("Death Eater", 60, 5, 50), new Enemy("Death Eater", 60, 5, 50), new Enemy("Death Eater", 60, 5, 50)};
+
+        Boss[] bosses = new Boss[]{new Boss("Bellatrix Lestrange", 200, 20, 20), new Boss("Voldemort", 200, 40, 20)};
+        player.setKnownSpells(new Spell[]{new Spell("Wingardium Leviosa", 50, 0), new Spell("Expecto Patronum", 15, 0), new Spell("Expelliarmus", 75, 2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75, 4)});
         player.setPotions(new Potion[]{new Potion("Health potion", 0)});
 
-        currentLevel = new Level(enemies,bosses);
+        currentLevel = new Level(enemies, bosses);
+    }
+    else{
+        Enemy[] enemies = new Enemy[]{new Enemy("Ron Weasley", 60, 5, 50), new Enemy("Hermione Granger", 60, 5, 50), new Enemy("Fred Weasley", 60, 5, 50), new Enemy("George Weasley", 60, 5, 50), new Enemy("Ginny Weasley", 60, 5, 50), new Enemy("Rubeus Hagrid", 60, 5, 50)};
+
+        player.setKnownSpells(new Spell[]{new Spell("Wingardium Leviosa", 50, 0), new Spell("Expecto Patronum", 15, 0), new Spell("Expelliarmus", 75, 2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75, 4), new Spell("Avada Kedavra", 75, 1)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+
+        currentLevel = new Level(enemies, null);
+
+    }
 
     }
 }
