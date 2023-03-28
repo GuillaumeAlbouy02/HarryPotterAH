@@ -40,16 +40,21 @@ public void play(){
         while(currentLevel.getCurrentEnemy()!=null && !gameOver) {
             specialRule(turn);
             currentEnemy = currentLevel.getCurrentEnemy();
-            ds.printText("You're facing a " + currentEnemy.getName() + " at " + currentEnemy.getHp() + " hp");
-            ds.printText("You're at " + player.getHp() + " hp");
+
             playerMove();
+            if (currentEnemy.getHp() <= 0) {
+                currentLevel.killCurrentEnemy(currentEnemy);
+                currentEnemy = null;
+            }
+            currentEnemy= currentLevel.getCurrentEnemy(); //The enemy is refreshed, to avoid getting killed by an enemy you defeated with the previous move.
             endTurn();
             turn++;
         }
         if(currentLevel.getCurrentEnemy()==null){
-            ds.printText("You cleared the level !\nYou can choose to 1 - increase your health\n 2 - increase your damages");
+            ds.displayLevel(level,"Outro");
+            ds.printText("\nYou cleared the level !\nYou can choose to: \n 1 - increase your health\n 2 - increase your damages");
             int choice = 0;
-            while (choice==0) {
+            while (choice==0 && level!=7) {
                 choice = sc.getInt2("Press 1 for heath, or 2 for damage");
 
                 if (choice == 2) {
@@ -63,7 +68,7 @@ public void play(){
                 else {
                     choice = 0;
                 }
-            }ds.displayLevel(level,"Outro");
+            }
             level++;
         }
 
@@ -78,10 +83,7 @@ public void play(){
 
     public void endTurn(){
 
-        if (currentEnemy.getHp() <= 0) {
-            currentLevel.killCurrentEnemy(currentEnemy);
-            currentEnemy = null;
-        }
+
         if (currentEnemy != null && player.getDefend()!=1) {
             currentEnemy.attack(player, currentEnemy.getDamage(), currentEnemy.getPrecision());
         } else if (currentEnemy != null && player.getDefend()==1) {
@@ -107,7 +109,7 @@ private void createPlayer(){
     player = new Wizard();
     player.setName(sc.getString("Please enter your name : "));
     player.setPet(null);
-    ds.printText("Congratulation "+player.getName()+ " ! You've been accepted to Hogwarts School of Witchcraft and Wizardry !");
+    ds.printText("Congratulation "+player.getName()+ " ! You've been accepted to Hogwarts School of Witchcraft and Wizardry !\n");
     ds.printText("You must be excited to start the first year, but first you have to buy a pet and a wand in Diagon Alley");
     ds.printText("Let's start with the pet, you can choose between an owl, a rat, a cat or a toad");
     while (player.getPet()==null){
@@ -117,10 +119,10 @@ private void createPlayer(){
         }
 
     }
-    ds.printText("So you chose an adorable "+ player.getPet().name());
+    ds.printText("So you chose an adorable "+ player.getPet().name()+"\n");
     ds.printText("You must now go to Ollivander's to choose a wand, or, to be exact, to be chosen by a wand");
     player.setWand(new Wand(Core.values()[ThreadLocalRandom.current().nextInt(0,3)], ThreadLocalRandom.current().nextInt(9,15)));
-    ds.printText("You were chosen by a "+player.getWand().getSize() + " inches wand, with a " + player.getWand().getCore().name() + " core");
+    ds.printText("You were chosen by a "+player.getWand().getSize() + " inches wand, with a " + player.getWand().getCore().name() + " core\n");
     SortingHat.chooseHouse(player,sc, ds);
     if (player.getHouse()==House.SLYTHERIN){
         player.setDamageMultiplier(1.5);
@@ -222,44 +224,47 @@ public void specialRule(int turn){
 }
 
 public void playerMove(){
-    int choice = 0;
-    while (choice ==0) {
-        choice = sc.getInt2("You can : \n1 - Cast spell \n2 - Use object \n3 - Defend");
-        if (choice == 1) {
-            ds.printText("Here are the spells you know:");
-            for (int i = 0; i < player.getKnownSpells().length; i++) {
-                ds.printText(i + " - " + player.getKnownSpells()[i].toString());
-            }
-            int g = -1;
-            while (g >= player.getKnownSpells().length || g < 0) {
-                g = sc.getInt2("Which spell do you choose ?");
-            }
-            player.getKnownSpells()[g].use(currentEnemy, currentLevel, player, ds);
-
-
-        } else if (choice == 2) {
-            if (player.getPotions() != null) {
-                ds.printText("Here are the objects you have:");
-                for (int i = 0; i < player.getPotions().length; i++) {
-                    ds.printText(i + " - " + player.getPotions()[i].toString());
+    if(currentEnemy!=null) {
+        ds.printText("\n \nYou're facing a " + currentEnemy.getName() + " at " + currentEnemy.getHp() + " hp");
+        ds.printText("You're at " + player.getHp() + " hp");
+        int choice = 0;
+        while (choice == 0) {
+            choice = sc.getInt2("You can : \n1 - Cast spell \n2 - Use object \n3 - Defend");
+            if (choice == 1) {
+                ds.printText("Here are the spells you know:");
+                for (int i = 0; i < player.getKnownSpells().length; i++) {
+                    ds.printText(i + " - " + player.getKnownSpells()[i].toString());
                 }
                 int g = -1;
                 while (g >= player.getKnownSpells().length || g < 0) {
-                    g = sc.getInt2("Which object do you choose to use ?");
+                    g = sc.getInt2("Which spell do you choose ?");
                 }
-                player.getPotions()[g].use(currentEnemy, player, ds);
+                player.getKnownSpells()[g].use(currentEnemy, currentLevel, player, ds);
+
+            } else if (choice == 2) {
+                if (player.getPotions() != null) {
+                    ds.printText("Here are the objects you have:");
+                    for (int i = 0; i < player.getPotions().length; i++) {
+                        ds.printText(i + " - " + player.getPotions()[i].toString());
+                    }
+                    int g = -1;
+                    while (g >= player.getKnownSpells().length || g < 0) {
+                        g = sc.getInt2("Which object do you choose to use ?");
+                    }
+                    player.getPotions()[g].use(currentEnemy, player, ds);
+
+                } else {
+                    ds.printText("You don't have any objects");
+                }
+
+            } else if (choice == 3) {
+                ds.printText("You chose to defend yourself");
+                player.setDefend(1);
+
 
             } else {
-                ds.printText("You don't have any objects");
+                choice = 0;
             }
-
-        } else if (choice==3) {
-            ds.printText("You chose to defend yourself");
-            player.setDefend(1);
-
-
-        } else{
-            choice = 0;
         }
     }
 
@@ -291,7 +296,7 @@ public void playerMove(){
 
         }
         Boss[] bosses = null;
-        player.setKnownSpells(new Spell[]{new Spell("Alohomora", 1,0), new Spell("Reparo",1,0), new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,2)});
+        player.setKnownSpells(new Spell[]{new Spell("Alohomora", 1,0), new Spell("Reparo",1,0), new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 75,2)});
         player.setPotions(new Potion[]{new Potion("Health potion", 0)});
 
         currentLevel = new Level(enemies,bosses);
@@ -380,4 +385,7 @@ public void playerMove(){
     }
 
     }
+
+
+
 }
