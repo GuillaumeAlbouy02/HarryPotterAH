@@ -11,14 +11,12 @@ public class Display {
     }
 
     public void displayLevel(int level, String state, boolean isEvil) {
-        Scanner fileSc = null;
-        if(!isEvil) {
-            fileSc = new Scanner(getClass().getResourceAsStream("/" + String.valueOf(level) + state + "Text.txt"));
+        String fileName = "/" + String.valueOf(level) + state + "Text.txt";
+        if(isEvil) {
+            fileName = "/" + String.valueOf(level) + state + "TextEvil.txt";
         }
-        else{
-            fileSc = new Scanner(getClass().getResourceAsStream("/" + String.valueOf(level) + state + "TextEvil.txt"));
 
-        }
+        Scanner fileSc = new Scanner(getClass().getResourceAsStream(fileName));
         while (fileSc.hasNextLine()) {
             System.out.println(fileSc.nextLine());
         }
