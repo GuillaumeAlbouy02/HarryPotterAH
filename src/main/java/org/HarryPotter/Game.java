@@ -35,23 +35,24 @@ public void play(){
 
         while(level<8 && !gameOver){
         levelSelect();                                              //Level creation
-        ds.displayLevel(level,"Intro");
+        ds.displayLevel(level,"Intro", player.isEvil());
         int turn = 1;
         while(currentLevel.getCurrentEnemy()!=null && !gameOver) {
             specialRule(turn);
             currentEnemy = currentLevel.getCurrentEnemy();
 
             playerMove();
+            currentEnemy= currentLevel.getCurrentEnemy(); //The enemy is refreshed, to avoid getting killed by an enemy you defeated with the previous move.
+
             if (currentEnemy.getHp() <= 0) {
                 currentLevel.killCurrentEnemy(currentEnemy);
                 currentEnemy = null;
             }
-            currentEnemy= currentLevel.getCurrentEnemy(); //The enemy is refreshed, to avoid getting killed by an enemy you defeated with the previous move.
             endTurn();
             turn++;
         }
         if(currentLevel.getCurrentEnemy()==null){
-            ds.displayLevel(level,"Outro");
+            ds.displayLevel(level,"Outro", player.isEvil());
             ds.printText("\nYou cleared the level !\nYou can choose to: \n 1 - increase your health\n 2 - increase your damages");
             int choice = 0;
             while (choice==0 && level!=7) {
