@@ -44,7 +44,7 @@ public void play(){
             playerMove();
             currentEnemy= currentLevel.getCurrentEnemy(); //The enemy is refreshed, to avoid getting killed by an enemy you defeated with the previous move.
 
-            if (currentEnemy.getHp() <= 0) {
+            if (currentEnemy!=null &&currentEnemy.getHp() <= 0) {
                 currentLevel.killCurrentEnemy(currentEnemy);
                 currentEnemy = null;
             }
@@ -53,9 +53,10 @@ public void play(){
         }
         if(currentLevel.getCurrentEnemy()==null){
             ds.displayLevel(level,"Outro", player.isEvil());
-            ds.printText("\nYou cleared the level !\nYou can choose to: \n 1 - increase your health\n 2 - increase your damages");
             int choice = 0;
             while (choice==0 && level!=7) {
+                ds.printText("\nYou cleared the level !\nYou can choose to: \n 1 - increase your health\n 2 - increase your damages");
+
                 choice = sc.getInt2("Press 1 for heath, or 2 for damage");
 
                 if (choice == 2) {
