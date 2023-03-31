@@ -58,7 +58,7 @@ public void play(){
 
         }
         if (level==8){
-            ds.printText("you saved the world!");
+            ds.printText("Thank you for playing");
         }
         else{
             ds.printText("You were tragically killed trying to protect your friends :(");
