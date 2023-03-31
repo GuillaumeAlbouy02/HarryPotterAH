@@ -6,6 +6,9 @@ import org.HarryPotter.Characters.Character;
 import org.HarryPotter.display.Display;
 
 public class Potion {
+
+    //This class could be renamed "Items" since it represents all the items and not only the potions
+
     private @Getter @Setter String name;
     private @Getter int effect;
     private @Getter @Setter int useNumber;
@@ -37,16 +40,16 @@ public class Potion {
     }
     public void heal(Wizard player, Display ds){
         if(player.getHp()<player.getMaxHealth()){
-            if (player.getHouse()== House.HUFFLEPUFF){
-                if (player.getHp()< player.getMaxHealth()-10){
-                    player.setHp(player.getHp()+10);
+            if (player.getHouse()== House.HUFFLEPUFF){          //If the player is from Hufflepuff, the potion is more efficient
+                if (player.getHp()< player.getMaxHealth()-15){
+                    player.setHp(player.getHp()+15);
                 }
                 else{
                     player.setHp(player.getMaxHealth());
                 }
             }
             else {
-                if (player.getHp() <= player.getMaxHealth() - 10) {
+                if (player.getHp() <= player.getMaxHealth() - 10) {             //The potion replenishes 10 hp, exept if the player has lost less than 10hp, in which case it replenishes all the health
                     player.setHp(player.getHp() + 10);
                 } else {
                     player.setHp(player.getMaxHealth());

@@ -238,6 +238,7 @@ public void specialRule(int turn){
 }
 
 public void playerMove(){
+    //the player is asked which move he wants to make. The corresponding method is then called
     if(currentEnemy!=null) {
         ds.printText("\n \nYou're facing a " + currentEnemy.getName() + " at " + currentEnemy.getHp() + " hp");
         ds.printText("You're at " + player.getHp() + " hp");
@@ -283,6 +284,12 @@ public void playerMove(){
     }
 
 }
+
+
+/*
+THE FOLLOWING METHODS ARE MADE TO INITIALIZE EACH LEVEL
+enemies, bosses, available spells and items
+ */
 
 
     public void lev1(){

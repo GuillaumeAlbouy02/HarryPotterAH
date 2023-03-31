@@ -46,6 +46,7 @@ public class Level {
     }
 
     public void killCurrentEnemy(AbstractEnemy enemyKilled) {
+        // This method is used to set an enemy to null
         if (enemies != null) {
             for (int i = enemies.length - 1; i >= 0; i--) {
                 if (enemies[i] == enemyKilled) {
