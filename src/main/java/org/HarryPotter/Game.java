@@ -123,11 +123,14 @@ private void createPlayer(){
     ds.printText("Congratulation "+player.getName()+ " ! You've been accepted to Hogwarts School of Witchcraft and Wizardry !\n");
     ds.printText("You must be excited to start the first year, but first you have to buy a pet and a wand in Diagon Alley");
     ds.printText("Let's start with the pet, you can choose between an owl, a rat, a cat or a toad");
+
     while (player.getPet()==null){
-        int choix = sc.getInt2("Enter 1 for owl, 2 for rat, 3 for cat or 4 for a toad");
-        if(choix<5){
-            player.setPet(Pet.values()[choix-1]);
+        int choix = -1;
+        while(!(choix<5&&choix>0)){
+            choix = sc.getInt2("Enter 1 for owl, 2 for rat, 3 for cat or 4 for a toad");
+
         }
+        player.setPet(Pet.values()[choix-1]);
 
     }
     ds.printText("So you chose an adorable "+ player.getPet().name()+"\n");
