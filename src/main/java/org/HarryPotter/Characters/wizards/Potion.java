@@ -8,21 +8,30 @@ import org.HarryPotter.display.Display;
 public class Potion {
     private @Getter @Setter String name;
     private @Getter int effect;
-    public Potion(String name, int effect){
+    private @Getter @Setter int useNumber;
+    public Potion(String name, int effect, int useNumber){
         this.name = name;
         this.effect = effect;
+        this.useNumber = useNumber;
 
     }
 
     public void use(Character enemy, Wizard player, Display ds){
-        switch (effect) {
-            case 0: //health potion
-                ds.printText("You drink a healing potion");
-                heal(player,ds);
-                break;
-            case 1: //case of the Basilic's fang and Gryffindor's sword
-                enemy.setHp(0);
+        if(useNumber>0) {
+            switch (effect) {
+                case 0: //health potion
+                    ds.printText("You drink a healing potion");
+                    heal(player, ds);
+                    break;
+                case 1: //case of the Basilic's fang and Gryffindor's sword
+                    enemy.setHp(0);
 
+            }
+            setUseNumber(getUseNumber()-1);
+
+        }
+        else{
+            ds.printText("You don't have any of those left !");
         }
 
     }

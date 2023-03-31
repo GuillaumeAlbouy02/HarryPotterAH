@@ -30,17 +30,17 @@ private SafeScanner sc = new SafeScanner(System.in, ds);
 private boolean gameOver = false;
 
 public void play(){
-    createPlayer();
-    level = sc.getInt2("level : ");
+    createPlayer();                                                 //The game begins with the character creation
+
+    level = sc.getInt2("level : ");                                 //You can access any level at the beginning of the game if you don't want to restart from the 1st level
 
         while(level<8 && !gameOver){
-        levelSelect();                                              //Level creation
+        levelSelect();                                              //Level creation : depending on this.level value, it will initialise currentLevel (create a list of enemies and bosses) and the player's spells and potions
         ds.displayLevel(level,"Intro", player.isEvil());
         int turn = 1;
         while(currentLevel.getCurrentEnemy()!=null && !gameOver) {
             specialRule(turn);
             currentEnemy = currentLevel.getCurrentEnemy();
-
             playerMove();
             currentEnemy= currentLevel.getCurrentEnemy(); //The enemy is refreshed, to avoid getting killed by an enemy you defeated with the previous move.
 
@@ -51,7 +51,9 @@ public void play(){
             endTurn();
             turn++;
         }
-        if(currentLevel.getCurrentEnemy()==null){
+
+
+        if(currentLevel.getCurrentEnemy()==null){                   //End of the level
             ds.displayLevel(level,"Outro", player.isEvil());
             int choice = 0;
             while (choice==0 && level!=7) {
@@ -126,6 +128,8 @@ private void createPlayer(){
     player.setWand(new Wand(Core.values()[ThreadLocalRandom.current().nextInt(0,3)], ThreadLocalRandom.current().nextInt(9,15)));
     ds.printText("You were chosen by a "+player.getWand().getSize() + " inches wand, with a " + player.getWand().getCore().name() + " core\n");
     SortingHat.chooseHouse(player,sc, ds);
+
+    //House bonus
     if (player.getHouse()==House.SLYTHERIN){
         player.setDamageMultiplier(1.5);
     }
@@ -173,14 +177,16 @@ public void levelSelect(){
 public void specialRule(int turn){
     switch (level) {
         case 2:
+            int healthPotions = player.getPotions()[0].getUseNumber();
+
             if(turn ==3 && player.getHouse().equals(House.GRYFFINDOR)){
                 ds.printText("You are slowly losing hope of ever defeating this beast, when you suddenly hear a bird's cry beahind you. You turn around, only to discover that :");
                 ds.printText("Dumbledore's phoenix, Fawkes, has brought you... GRYFFINDOR's SWORD ?!!?");
-                player.setPotions(new Potion[]{new Potion("health potion",0), new Potion("Godric Gryffindor's sword",1)});
+                player.setPotions(new Potion[]{new Potion("health potion",0, healthPotions), new Potion("Godric Gryffindor's sword",1, 1)});
             } else if (turn == 5 && !player.getHouse().equals(House.GRYFFINDOR)){
                 ds.printText("You grow tired and you are losing hope, there's simply nothing you can do !");
                 ds.printText("You throw a rock at the basilisk out of hopelessness, and somehow manage to break one of its fang, which you quickly pick up as it would make a nice souvenir if you ever got out of here alive.");
-                player.setPotions(new Potion[]{new Potion("health potion",0), new Potion("A basilisk fang",1)});
+                player.setPotions(new Potion[]{new Potion("health potion",0, healthPotions), new Potion("A basilisk fang",1, 1)});
 
 
             }
@@ -207,9 +213,11 @@ public void specialRule(int turn){
 
             break;
         case 5:
+            int healthPotion5 = player.getPotions()[0].getUseNumber();
+
             if(turn>ThreadLocalRandom.current().nextInt(3,7)){
                 ds.printText("you got fireworks");
-                player.setPotions(new Potion[]{new Potion("Health potion", 0), new Potion("Fireworks", 1)});
+                player.setPotions(new Potion[]{new Potion("Health potion", 0, healthPotion5), new Potion("Fireworks", 1, 1)});
             }
 
             break;
@@ -247,7 +255,7 @@ public void playerMove(){
                 if (player.getPotions() != null) {
                     ds.printText("Here are the objects you have:");
                     for (int i = 0; i < player.getPotions().length; i++) {
-                        ds.printText(i + " - " + player.getPotions()[i].toString());
+                        ds.printText(i + " - " + player.getPotions()[i].toString() + " ("+player.getPotions()[i].getUseNumber()+" uses left)");
                     }
                     int g = -1;
                     while (g >= player.getKnownSpells().length || g < 0) {
@@ -286,7 +294,7 @@ public void playerMove(){
         Boss[] bosses = new Boss[1];
         bosses[0] = new Boss("Basilisk", 1000,15,10);
         player.setKnownSpells(new Spell[]{new Spell("Alohomora", 1,0), new Spell("Reparo",1,0), new Spell("Wingardium Leviosa",50,0)});
-        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0, 5)});
 
         currentLevel = new Level(null,bosses);
 
@@ -299,7 +307,7 @@ public void playerMove(){
         }
         Boss[] bosses = null;
         player.setKnownSpells(new Spell[]{new Spell("Alohomora", 1,0), new Spell("Reparo",1,0), new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 75,2)});
-        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0,5)});
 
         currentLevel = new Level(enemies,bosses);
 
@@ -310,7 +318,7 @@ public void playerMove(){
 
         Boss[] bosses = new Boss[]{new Boss("Voldemort", 1500, 100,10)};
         player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 10, 3)});
-        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0, 5)});
 
         currentLevel = new Level(enemies,bosses);
 
@@ -322,7 +330,7 @@ public void playerMove(){
 
         Boss[] bosses = new Boss[]{new Boss("Dolores Umbridge", 1000, 13,20)};
         player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 10, 0)});
-        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0, 5)});
 
         currentLevel = new Level(enemies,bosses);
 
@@ -340,7 +348,7 @@ public void playerMove(){
 
                 Boss[] bosses = new Boss[]{new Boss("Hogwarts teacher", 150, 13, 20)};
                 player.setKnownSpells(new Spell[]{new Spell("Wingardium Leviosa", 50, 0), new Spell("Expecto Patronum", 15, 0), new Spell("Expelliarmus", 75, 2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75, 4)});
-                player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+                player.setPotions(new Potion[]{new Potion("Health potion", 0, 5)});
                 player.setEvil(true);
 
                 currentLevel = new Level(enemies, bosses);
@@ -359,7 +367,7 @@ public void playerMove(){
 
         Boss[] bosses = new Boss[]{new Boss("Severus Snape", 150, 13,20)};
         player.setKnownSpells(new Spell[]{ new Spell("Wingardium Leviosa",50,0), new Spell("Expecto Patronum", 15,0), new Spell("Expelliarmus", 75,2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75,4)});
-        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0, 5)});
 
         currentLevel = new Level(enemies,bosses);
     }
@@ -372,7 +380,7 @@ public void playerMove(){
 
         Boss[] bosses = new Boss[]{new Boss("Bellatrix Lestrange", 200, 20, 20), new Boss("Voldemort", 200, 40, 20)};
         player.setKnownSpells(new Spell[]{new Spell("Wingardium Leviosa", 50, 0), new Spell("Expecto Patronum", 15, 0), new Spell("Expelliarmus", 75, 2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75, 4)});
-        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0, 5)});
 
         currentLevel = new Level(enemies, bosses);
     }
@@ -380,7 +388,7 @@ public void playerMove(){
         Enemy[] enemies = new Enemy[]{new Enemy("Ron Weasley", 60, 5, 50), new Enemy("Hermione Granger", 60, 5, 50), new Enemy("Fred Weasley", 60, 5, 50), new Enemy("George Weasley", 60, 5, 50), new Enemy("Ginny Weasley", 60, 5, 50), new Enemy("Rubeus Hagrid", 60, 5, 50)};
 
         player.setKnownSpells(new Spell[]{new Spell("Wingardium Leviosa", 50, 0), new Spell("Expecto Patronum", 15, 0), new Spell("Expelliarmus", 75, 2), new Spell("Accio", 10, 0), new Spell("Sectumsempra", 75, 4), new Spell("Avada Kedavra", 75, 1)});
-        player.setPotions(new Potion[]{new Potion("Health potion", 0)});
+        player.setPotions(new Potion[]{new Potion("Health potion", 0, 5)});
 
         currentLevel = new Level(enemies, null);
 
