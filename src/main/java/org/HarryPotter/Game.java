@@ -263,7 +263,7 @@ public void playerMove(){
                         ds.printText(i + " - " + player.getPotions()[i].toString() + " ("+player.getPotions()[i].getUseNumber()+" uses left)");
                     }
                     int g = -1;
-                    while (g >= player.getKnownSpells().length || g < 0) {
+                    while (g >= player.getPotions().length || g < 0) {
                         g = sc.getInt2("Which object do you choose to use ?");
                     }
                     player.getPotions()[g].use(currentEnemy, player, ds);
