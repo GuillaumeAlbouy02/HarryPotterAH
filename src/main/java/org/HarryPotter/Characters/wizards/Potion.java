@@ -46,7 +46,7 @@ public class Potion {
                 }
             }
             else {
-                if (player.getHp() < player.getMaxHealth() - 10) {
+                if (player.getHp() <= player.getMaxHealth() - 10) {
                     player.setHp(player.getHp() + 10);
                 } else {
                     player.setHp(player.getMaxHealth());

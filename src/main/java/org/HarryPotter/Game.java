@@ -1,5 +1,7 @@
 package org.HarryPotter;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.HarryPotter.Characters.ennemies.AbstractEnemy;
 import org.HarryPotter.Characters.ennemies.Boss;
 import org.HarryPotter.Characters.ennemies.Enemy;
@@ -15,19 +17,19 @@ import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Game {
-private Wizard player;
+private @Getter @Setter Wizard player;
 
 private AbstractEnemy currentEnemy;
 
 private int level = 1;
 
-private Level currentLevel;
+private @Setter @Getter Level currentLevel;
 
 private Display ds = new Display();
 private SafeScanner sc = new SafeScanner(System.in, ds);
 
 
-private boolean gameOver = false;
+private @Getter boolean gameOver = false;
 
 public void play(){
     createPlayer();                                                 //The game begins with the character creation
@@ -42,12 +44,7 @@ public void play(){
             specialRule(turn);
             currentEnemy = currentLevel.getCurrentEnemy();
             playerMove();
-            currentEnemy= currentLevel.getCurrentEnemy(); //The enemy is refreshed, to avoid getting killed by an enemy you defeated with the previous move.
 
-            if (currentEnemy!=null &&currentEnemy.getHp() <= 0) {
-                currentLevel.killCurrentEnemy(currentEnemy);
-                currentEnemy = null;
-            }
             endTurn();
             turn++;
         }
@@ -55,24 +52,7 @@ public void play(){
 
         if(currentLevel.getCurrentEnemy()==null){                   //End of the level
             ds.displayLevel(level,"Outro", player.isEvil());
-            int choice = 0;
-            while (choice==0 && level!=7) {
-                ds.printText("\nYou cleared the level !\nYou can choose to: \n 1 - increase your health\n 2 - increase your damages");
-
-                choice = sc.getInt2("Press 1 for heath, or 2 for damage");
-
-                if (choice == 2) {
-                    player.setDamageMultiplier(player.getDamageMultiplier()+0.1);
-
-                }
-                else if (choice == 1) {
-                    player.setMaxHealth(player.getMaxHealth()+20);
-
-                    }
-                else {
-                    choice = 0;
-                }
-            }
+            awardChoice();
             level++;
         }
 
@@ -85,9 +65,36 @@ public void play(){
         }
     }
 
+    public void awardChoice(){
+        int choice = 0;
+        while (choice==0 && level!=7) { //The choice interface loops while the player hasn't chosen one of the options.
+            ds.printText("\nYou cleared the level !\nYou can choose to: \n 1 - increase your health\n 2 - increase your damages");
+
+            choice = sc.getInt2("Press 1 for heath, or 2 for damage");
+
+            if (choice == 2) {
+                player.setDamageMultiplier(player.getDamageMultiplier()+0.1);
+
+            }
+            else if (choice == 1) {
+                player.setMaxHealth(player.getMaxHealth()+20);
+
+            }
+            else {
+                choice = 0;
+            }
+        }
+    }
+
     public void endTurn(){
 
 
+        currentEnemy= currentLevel.getCurrentEnemy(); //The enemy is refreshed, to avoid getting killed by an enemy you defeated with the previous move.
+
+        if (currentEnemy!=null &&currentEnemy.getHp() <= 0) { //If the enemy hp equals 0, it is set to null
+            currentLevel.killCurrentEnemy(currentEnemy);
+            currentEnemy = null;
+        }
         if (currentEnemy != null && player.getDefend()!=1) {
             currentEnemy.attack(player, currentEnemy.getDamage(), currentEnemy.getPrecision());
         } else if (currentEnemy != null && player.getDefend()==1) {
@@ -144,9 +151,6 @@ private void createPlayer(){
 
 }
 
-private boolean gameOver(){
-    return false;
-}
 
 public void levelSelect(){
     switch (level) {
